@@ -81,7 +81,6 @@ function love.update(dt)
         enemies[i]:move(player.x, player.y)
 
         enemies[i].collider:setLinearVelocity(enemies[i].vx, enemies[i].vy)
-        --player.collider:setType('static')
 
         if enemies[i]:checkTouched(player.x, player.y, player.radius) then
             player.health = player.health - 1
