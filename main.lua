@@ -59,6 +59,10 @@ function love.update(dt)
 
     for i = 1, #enemies do 
         enemies[i]:move(player.x, player.y)
+
+        if enemies[i]:checkTouched(player.x, player.y, player.radius) then
+            player.health = player.health - 1
+        end
     end
 end
 

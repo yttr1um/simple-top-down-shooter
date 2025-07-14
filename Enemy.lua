@@ -21,6 +21,10 @@ function Enemy()
             end
         end,
 
+        checkTouched = function (self, player_x, player_y, cursor_radius) 
+            return math.sqrt((self.x - player_x) ^ 2 + (self.y - player_y) ^ 2) <= cursor_radius * 2
+        end,
+
         draw = function(self)
             love.graphics.setColor(0.5, 0.6, 0.5)
             love.graphics.circle("fill", self.x, self.y, self.radius)
