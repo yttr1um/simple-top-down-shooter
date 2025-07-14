@@ -1,23 +1,28 @@
 _G.love = require "love"
+_G.wf = require("Libraries/windfield")
 
-function Enemy() 
+function Enemy(world) 
     return {
         radius = 20,
         x = -10,
         y = -50,
-        level = 1,
+        speed = 75,
+        collider = world:newCircleCollider(-10, -50, 25),
+
+        vx = 0,
+        vy = 0,
 
         move = function(self, player_x, player_y)
             if player_x - self.x > 0 then
-                self.x = self.x + self.level
+                self.vx = self.speed 
             elseif player_x - self.x < 0 then 
-                self.x = self.x - self.level  
+                self.vx = self.speed * -1 
             end
 
             if player_y - self.y > 0 then
-                self.y = self.y + self.level
+                self.vy = self.speed
             elseif player_y - self.y < 0 then 
-                self.y = self.y - self.level  
+                self.vy = self.speed * -1 
             end
         end,
 

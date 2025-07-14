@@ -4,10 +4,6 @@ _G.wf = require("Libraries/windfield")
 
 bullets = {}
 
-enemies = {
-    enemy()
-}
-
 function love.load()
     love.mouse.setVisible(false)
 
@@ -30,6 +26,10 @@ function love.load()
             y = 100,
             bulletSpeed = 250,
         }
+    }
+
+    enemies = {
+        enemy(world)
     }
 
     player.collider:setFixedRotation(true)
@@ -74,7 +74,14 @@ function love.update(dt)
     -- enemies
 
     for i = 1, #enemies do 
+
+        enemies[i].x = enemies[i].collider:getX()
+        enemies[i].y = enemies[i].collider:getY()
+
         enemies[i]:move(player.x, player.y)
+
+        enemies[i].collider:setLinearVelocity(enemies[i].vx, enemies[i].vy)
+        --player.collider:setType('static')
 
         if enemies[i]:checkTouched(player.x, player.y, player.radius) then
             player.health = player.health - 1
