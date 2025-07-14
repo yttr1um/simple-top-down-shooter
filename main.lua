@@ -1,6 +1,8 @@
 _G.love = require("love")
-_G.enemy = require("Enemy")
 _G.wf = require("Libraries/windfield")
+
+_G.enemy = require("Enemy")
+_G.player = require("Player")
 
 bullets = {}
 
@@ -9,28 +11,12 @@ function love.load()
 
     world = wf.newWorld(0, 0)
 
-    player = {
-        x = love.graphics.getWidth() / 2,
-        y = love.graphics.getHeight() / 2,
-        radius = 30,
-        speed = 300,
-        health = 100,
-        collider = world:newCircleCollider(
-            love.graphics.getWidth() / 2, 
-            love.graphics.getHeight() / 2, 
-            35),
-
-        gun = {
-            radius = 10,
-            x = 100,
-            y = 100,
-            bulletSpeed = 250,
-        }
-    }
+    player = player(world)
 
     enemies = {
         enemy(world)
     }
+
 
     player.collider:setFixedRotation(true)
 end
