@@ -41,7 +41,14 @@ end
 function love.draw()
     love.graphics.circle("fill", player.x, player.y, player.radius)
 
-    love.graphics.setColor(0.5, 0.5, 0.5)
+    --love.graphics.setColor(0.5, 0.5, 0.5)
+
+    if love.mouse.isDown("1") then
+        love.graphics.setColor(1, 0, 0)
+    else
+        love.graphics.setColor(0.5, 0.5, 0.5)
+    end
+
     love.graphics.circle("line", player.gun.x, player.gun.y, player.gun.radius)
 
     -- reset coloring
