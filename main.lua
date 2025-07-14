@@ -4,6 +4,8 @@ _G.wf = require("Libraries/windfield")
 _G.enemy = require("Enemy")
 _G.player = require("Player")
 
+math.randomseed(os.time())
+
 bullets = {}
 
 function love.load()
