@@ -10,8 +10,11 @@ local player = {
             radius = 10,
             x = 100,
             y = 100,
+            bulletSpeed = 250,
         }
     }
+
+bullets = {}
 
 function love.load()
     love.mouse.setVisible(false)
@@ -36,20 +39,50 @@ function love.update(dt)
     if love.keyboard.isDown("s") then
         player.y = player.y + player.speed
     end
+
+    -- find bullet new position
+
+    for i, v in ipairs(bullets) do 
+        v.x = v.x + (v.dx * dt)
+        v.y = v.y + (v.dy * dt)
+    end
+end
+
+function love.mousepressed(x, y, button) 
+    if button == 1 then
+        local startX = player.x + player.radius / 2
+        local startY = player.y + player.radius / 2
+
+        local mouseX = x 
+        local mouseY = y 
+
+        local angle = math.atan2((mouseY - startY), (mouseX - startX))
+
+        local bulletDx = player.gun.bulletSpeed * math.cos(angle)
+        local bulletDy = player.gun.bulletSpeed * math.sin(angle)
+
+        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+    end
 end
 
 function love.draw()
+
+    -- player
     love.graphics.circle("fill", player.x, player.y, player.radius)
 
-    --love.graphics.setColor(0.5, 0.5, 0.5)
-
+    -- cursor
     if love.mouse.isDown("1") then
         love.graphics.setColor(1, 0, 0)
     else
         love.graphics.setColor(0.5, 0.5, 0.5)
     end
-
     love.graphics.circle("line", player.gun.x, player.gun.y, player.gun.radius)
+
+    -- bullets
+    love.graphics.setColor(1, 0, 0)
+    for i, v in ipairs(bullets) do 
+        love.graphics.circle("fill", v.x, v.y, 3)
+    end
 
     -- reset coloring
     love.graphics.setColor(1, 1, 1)
