@@ -81,10 +81,20 @@ end
 
 function love.draw()
     -- FPS counter
+    love.graphics.setColor(1, 1, 1, 0.5)
     love.graphics.printf(
         "FPS: " .. love.timer.getFPS(), 
         love.graphics.newFont(16),
         10, 
+        love.graphics.getHeight()-25,
+        love.graphics.getWidth()
+    )
+    love.graphics.setColor(1, 1, 1)
+
+    love.graphics.printf(
+        "Health: ".. player.health,
+        love.graphics.newFont(16),
+        love.graphics.getWidth() - 100,
         love.graphics.getHeight()-25,
         love.graphics.getWidth()
     )
