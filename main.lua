@@ -5,6 +5,7 @@ local player = {
         y = 100,
         radius = 30,
         speed = 5,
+        health = 100,
 
         gun = {
             radius = 10,
@@ -50,8 +51,8 @@ end
 
 function love.mousepressed(x, y, button) 
     if button == 1 then
-        local startX = player.x + player.radius / 2
-        local startY = player.y + player.radius / 2
+        local startX = player.x 
+        local startY = player.y
 
         local mouseX = x 
         local mouseY = y 
