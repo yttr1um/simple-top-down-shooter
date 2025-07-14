@@ -1,4 +1,5 @@
 _G.love = require("love")
+_G.enemy = require("Enemy")
 
 local player = {
         x = 100,
@@ -17,8 +18,14 @@ local player = {
 
 bullets = {}
 
+enemies = {
+    enemy()
+}
+
 function love.load()
     love.mouse.setVisible(false)
+
+
 end
 
 function love.update(dt)
@@ -46,6 +53,12 @@ function love.update(dt)
     for i, v in ipairs(bullets) do 
         v.x = v.x + (v.dx * dt)
         v.y = v.y + (v.dy * dt)
+    end
+
+    -- enemies
+
+    for i = 1, #enemies do 
+        enemies[i]:move(player.x, player.y)
     end
 end
 
@@ -91,6 +104,11 @@ function love.draw()
     love.graphics.setColor(1, 0, 0)
     for i, v in ipairs(bullets) do 
         love.graphics.circle("fill", v.x, v.y, 3)
+    end
+
+    -- enemies
+    for i = 1, #enemies do
+        enemies[i]:draw()
     end
 
     -- reset coloring
