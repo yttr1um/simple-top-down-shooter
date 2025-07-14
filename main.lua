@@ -2,8 +2,8 @@ _G.love = require("love")
 _G.enemy = require("Enemy")
 
 local player = {
-        x = 100,
-        y = 100,
+        x = love.graphics.getWidth() / 2,
+        y = love.graphics.getHeight() / 2,
         radius = 30,
         speed = 5,
         health = 100,
