@@ -13,10 +13,11 @@ function love.load()
 
     player = player(world)
 
-    enemies = {
-        enemy(world)
-    }
+    enemies = {}
 
+    for i = 1, 5 do
+        table.insert(enemies, enemy(world))
+    end
 
     player.collider:setFixedRotation(true)
 end
@@ -58,7 +59,7 @@ function love.update(dt)
     end
 
     -- enemies
-
+    
     for i = 1, #enemies do 
 
         enemies[i].x = enemies[i].collider:getX()
