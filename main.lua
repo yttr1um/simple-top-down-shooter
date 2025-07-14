@@ -1,20 +1,6 @@
 _G.love = require("love")
 _G.enemy = require("Enemy")
-
-local player = {
-        x = love.graphics.getWidth() / 2,
-        y = love.graphics.getHeight() / 2,
-        radius = 30,
-        speed = 5,
-        health = 100,
-
-        gun = {
-            radius = 10,
-            x = 100,
-            y = 100,
-            bulletSpeed = 250,
-        }
-    }
+_G.wf = require("Libraries/windfield")
 
 bullets = {}
 
@@ -25,28 +11,58 @@ enemies = {
 function love.load()
     love.mouse.setVisible(false)
 
+    world = wf.newWorld(0, 0)
 
+    player = {
+        x = love.graphics.getWidth() / 2,
+        y = love.graphics.getHeight() / 2,
+        radius = 30,
+        speed = 300,
+        health = 100,
+        collider = world:newCircleCollider(
+            love.graphics.getWidth() / 2, 
+            love.graphics.getHeight() / 2, 
+            35),
+
+        gun = {
+            radius = 10,
+            x = 100,
+            y = 100,
+            bulletSpeed = 250,
+        }
+    }
+
+    player.collider:setFixedRotation(true)
 end
 
 function love.update(dt)
     player.gun.x, player.gun.y = love.mouse.getPosition()
 
+    local vx = 0
+    local vy = 0
+
     -- player movement
     if love.keyboard.isDown("a") then
-        player.x = player.x - player.speed
+        vx = player.speed * -1
     end
 
     if love.keyboard.isDown("d") then
-        player.x = player.x + player.speed
+        vx = player.speed
     end
 
     if love.keyboard.isDown("w") then
-        player.y = player.y - player.speed
+        vy = player.speed * -1
     end
 
     if love.keyboard.isDown("s") then
-        player.y = player.y + player.speed
+        vy = player.speed 
     end
+
+    player.collider:setLinearVelocity(vx, vy)
+
+    world:update(dt)
+    player.x = player.collider:getX()
+    player.y = player.collider:getY()
 
     -- find bullet new position
 
@@ -84,6 +100,8 @@ function love.mousepressed(x, y, button)
 end
 
 function love.draw()
+    world:draw()
+
     -- FPS counter
     love.graphics.setColor(1, 1, 1, 0.5)
     love.graphics.printf(
