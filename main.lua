@@ -67,6 +67,14 @@ function love.mousepressed(x, y, button)
 end
 
 function love.draw()
+    -- FPS counter
+    love.graphics.printf(
+        "FPS: " .. love.timer.getFPS(), 
+        love.graphics.newFont(16),
+        10, 
+        love.graphics.getHeight()-25,
+        love.graphics.getWidth()
+    )
 
     -- player
     love.graphics.circle("fill", player.x, player.y, player.radius)
