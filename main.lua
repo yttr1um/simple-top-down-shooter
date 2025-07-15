@@ -148,6 +148,10 @@ function love.update(dt)
             table.remove(enemies, i)
         end
     end
+
+    if #enemies == 0 or player.health <= 0 then
+        love.event.quit()
+    end
 end
 
 function love.mousepressed(x, y, button)
