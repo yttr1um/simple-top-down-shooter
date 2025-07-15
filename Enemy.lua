@@ -1,7 +1,8 @@
 _G.love = require "love"
-_G.wf = require("Libraries/windfield")
 
-function Enemy(world) 
+world = love.physics.newWorld(0, 0)
+
+function Enemy() 
 
     local dice = math.random(1,4) 
     local _x, _y
@@ -21,15 +22,17 @@ function Enemy(world)
         _y = math.random(0, love.graphics.getHeight())
     end
 
-    return {
+    enemy =  {
         radius = _radius,
         x = _x,
         y = _y,
         speed = 75,
-        collider = world:newCircleCollider(_x, _y, _radius + 5),
 
         vx = 0,
         vy = 0,
+
+        body = love.physics.newBody(world, x, y, "dynamic"),
+        shape = love.physics.newCircleShape(_radius),
 
         move = function(self, player_x, player_y)
             if player_x - self.x > 0 then
@@ -56,6 +59,12 @@ function Enemy(world)
         end,
 
     }
+
+    enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
+    enemy.fixture:setUserData(enemy)
+    enemy.body:setFixedRotation(true)
+
+    return enemy
 end
 
 return Enemy
