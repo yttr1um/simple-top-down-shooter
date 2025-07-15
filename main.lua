@@ -1,13 +1,33 @@
 _G.love = require("love")
 
 enemy = require("Enemy")
-_G.player = require("Player")
+player = require("Player")
 
 math.randomseed(os.time())
 
 player = player()
 
 bullets = {}
+bulletSpeed = 500
+nextBulletId = 1 
+
+function newBullet(id, x, y, dx, dy, r)
+    local bullet = {
+        x = x,
+        y = y,
+        dx = dx,
+        dy = dy,
+        id = id,
+        radius = r,
+        tag = "bullet",
+        body = love.physics.newBody(world, x, y, "dynamic"),
+        shape = love.physics.newCircleShape(r)
+    }
+
+    bullet.fixture = love.physics.newFixture(bullet.body, bullet.shape)
+    bullet.fixture:setUserData(bullet)
+    return bullet
+end
 
 function love.load()
     love.mouse.setVisible(false)
@@ -64,9 +84,14 @@ function love.update(dt)
 
     -- find bullet new position
 
-    for i, v in ipairs(bullets) do 
-        v.x = v.x + (v.dx * dt)
-        v.y = v.y + (v.dy * dt)
+    for id, v in pairs(bullets) do
+
+        local dx, dy = 0, 0
+
+        dx = v.dx
+        dy = v.dy
+
+        v.body:setLinearVelocity(dx, dy)
     end
 
     -- enemies
@@ -85,20 +110,20 @@ function love.update(dt)
     end
 end
 
-function love.mousepressed(x, y, button) 
+function love.mousepressed(x, y, button)
     if button == 1 then
-        local startX = player.x 
-        local startY = player.y
-
-        local mouseX = x 
-        local mouseY = y 
+        local startX, startY = player.x, player.y 
+        local mouseX, mouseY = x, y 
 
         local angle = math.atan2((mouseY - startY), (mouseX - startX))
 
-        local bulletDx = player.cursor.bulletSpeed * math.cos(angle)
-        local bulletDy = player.cursor.bulletSpeed * math.sin(angle)
+        local bulletDx = bulletSpeed * math.cos(angle)
+        local bulletDy = bulletSpeed * math.sin(angle)
 
-        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+        local bullet = newBullet(nextBulletId, startX, startY, bulletDx, bulletDy, 3)
+        bullets[bullet.id] = bullet
+
+        nextBulletId = nextBulletId + 1
     end
 end
 
@@ -134,10 +159,12 @@ function love.draw()
     love.graphics.circle("line", player.cursor.x, player.cursor.y, player.cursor.radius)
 
     -- bullets
-    love.graphics.setColor(1, 0, 0)
-    for i, v in ipairs(bullets) do 
-        love.graphics.circle("fill", v.x, v.y, 3)
+     love.graphics.setColor(1, 0, 0)
+    for i, v in pairs(bullets) do
+        local x, y = v.body:getPosition()
+        love.graphics.circle("fill", x, y, 3)
     end
+    love.graphics.setColor(1, 1, 1)
 
     -- enemies
     for i = 1, #enemies do

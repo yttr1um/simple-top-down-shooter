@@ -13,7 +13,6 @@ function Player()
             radius = 10,
             x = 100,
             y = 100,
-            bulletSpeed = 250,
         }
     }
 
