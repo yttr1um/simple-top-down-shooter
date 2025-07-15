@@ -196,7 +196,7 @@ function love.draw()
     else
         love.graphics.setColor(0.5, 0.5, 0.5)
     end
-    love.graphics.circle("line", player.cursor.x, player.cursor.y, player.cursor.radius)
+    love.graphics.print("+", love.graphics.newFont(32) ,player.cursor.x, player.cursor.y)
 
     -- bullets
      love.graphics.setColor(1, 0, 0)
