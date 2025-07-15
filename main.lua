@@ -75,7 +75,7 @@ function love.load()
 
     enemies = {}
 
-    while #enemies < 5 do
+    for i = 1, 5 do
         enemy_obj = enemy()
         table.insert(enemies, enemy_obj)
 
