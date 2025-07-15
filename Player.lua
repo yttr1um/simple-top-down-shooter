@@ -8,6 +8,7 @@ function Player()
         radius = 30,
         speed = 300,
         health = 100,
+        tag = "player",
 
         cursor = {
             radius = 10,

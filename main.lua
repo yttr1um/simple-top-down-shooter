@@ -5,6 +5,41 @@ player = require("Player")
 
 math.randomseed(os.time())
 
+world = love.physics.newWorld(0, 0)
+
+function removeBullet(bullet)
+    if bullet and bullet.body and bullet.body:isDestroyed() == false then
+        bullet.body:destroy()
+    end
+    bullets[bullet.id] = nil
+end
+
+function onCollisionEnter(a, b, contact)
+    local obj1, obj2 = a:getUserData(), b:getUserData()
+
+    if (obj1.tag == "bullet" or obj2.tag == "bullet") then
+        local bullet = obj1.tag == "bullet" and obj1 or obj2
+        if not(obj1.tag == "player" or obj2.tag=="player") then
+            removeBullet(bullet)
+        end
+
+        if (obj1.tag == "enemy" or obj2.tag == "enemy") then
+            local enemy = obj1.tag == "enemy" and obj1 or obj2
+            enemy.shot = true
+
+            if enemy.body and not enemy.body:isDestroyed() then
+                enemy.body:destroy()
+            end
+        end
+    end
+end
+
+function onCollisionExit(a, b, contact)
+
+end
+
+world:setCallbacks(onCollisionEnter, onCollisionExit)
+
 player = player()
 
 bullets = {}
@@ -31,8 +66,6 @@ end
 
 function love.load()
     love.mouse.setVisible(false)
-
-    world = love.physics.newWorld(0, 0)
 
     player.body = love.physics.newBody(world, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, "dynamic")
     player.shape = love.physics.newCircleShape(30)
@@ -97,15 +130,22 @@ function love.update(dt)
     -- enemies
     
     for i = 1, #enemies do 
+        if not enemies[i].shot then
+            enemies[i].x, enemies[i].y = enemies[i].body:getPosition()
 
-        enemies[i].x, enemies[i].y = enemies[i].body:getPosition()
+            enemies[i]:move(player.x, player.y)
 
-        enemies[i]:move(player.x, player.y)
+            enemies[i].body:setLinearVelocity(enemies[i].vx, enemies[i].vy)
 
-        enemies[i].body:setLinearVelocity(enemies[i].vx, enemies[i].vy)
+            if enemies[i]:checkTouched(player.x, player.y, player.radius) then
+                player.health = player.health - 1
+            end
+        end
+    end
 
-        if enemies[i]:checkTouched(player.x, player.y, player.radius) then
-            player.health = player.health - 1
+    for i = #enemies, 1, -1 do
+        if enemies[i].shot then
+            table.remove(enemies, i)
         end
     end
 end
@@ -170,6 +210,22 @@ function love.draw()
     for i = 1, #enemies do
         if not enemies[i].shot then
             enemies[i]:draw()
+        end
+    end
+
+    love.graphics.setColor(0, 0, 1)
+    for _, body in pairs(world:getBodies()) do
+        for _, fixture in pairs(body:getFixtures()) do
+            local shape = fixture:getShape()
+
+            if shape:typeOf("CircleShape") then
+                local cx, cy = body:getWorldPoints(shape:getPoint())
+                love.graphics.circle("line", cx, cy, shape:getRadius())
+            elseif shape:typeOf("PolygonShape") then
+                love.graphics.polygon("line", body:getWorldPoints(shape:getPoints()))
+            else
+                love.graphics.line(body:getWorldPoints(shape:getPoints()))
+            end
         end
     end
 

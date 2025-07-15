@@ -1,5 +1,4 @@
 function Enemy() 
-
     local dice = math.random(1,4) 
     local _x, _y
     local _radius = 20
@@ -23,6 +22,7 @@ function Enemy()
         x = _x,
         y = _y,
         speed = 75,
+        tag = "enemy",
 
         vx = 0,
         vy = 0,
