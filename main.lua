@@ -1,13 +1,11 @@
 _G.love = require("love")
 
-_G.enemy = require("Enemy")
+enemy = require("Enemy")
 _G.player = require("Player")
 
 math.randomseed(os.time())
 
-player = player(world)
-
-enemies = {}
+player = player()
 
 bullets = {}
 
@@ -16,40 +14,52 @@ function love.load()
 
     world = love.physics.newWorld(0, 0)
 
-    enemy = enemy()
+    player.body = love.physics.newBody(world, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, "dynamic")
+    player.shape = love.physics.newCircleShape(30)
+    player.fixture = love.physics.newFixture(player.body, player.shape)
+    player.fixture:setUserData(player)
+    player.body:setFixedRotation(true)
 
-    for i = 1, 5 do
-        table.insert(enemies, enemy)
+    enemies = {}
+
+    while #enemies < 5 do
+        enemy_obj = enemy()
+        table.insert(enemies, enemy_obj)
+
+        enemy_obj.body = love.physics.newBody(world, enemy_obj.x, enemy_obj.y, "dynamic")
+        enemy_obj.shape = love.physics.newCircleShape(enemy_obj.radius)
+        enemy_obj.fixture = love.physics.newFixture(enemy_obj.body, enemy_obj.shape)
+        enemy_obj.fixture:setUserData(enemy_obj)
+        enemy_obj.body:setFixedRotation(true)
     end
 
 end
 
 function love.update(dt)
+
+    world:update(dt)
+
     player.cursor.x, player.cursor.y = love.mouse.getPosition()
 
-    local vx = 0
-    local vy = 0
+     local dx, dy = 0, 0
 
-    -- player movement
     if love.keyboard.isDown("a") then
-        vx = player.speed * -1
+        dx = -player.speed
     end
 
     if love.keyboard.isDown("d") then
-        vx = player.speed
+        dx = player.speed
     end
 
     if love.keyboard.isDown("w") then
-        vy = player.speed * -1
+        dy = -player.speed
     end
 
     if love.keyboard.isDown("s") then
-        vy = player.speed 
+        dy = player.speed
     end
 
-    player.body:setLinearVelocity(vx, vy)
-
-    world:update(dt)
+    player.body:setLinearVelocity(dx, dy)
     player.x, player.y = player.body:getPosition()
 
     -- find bullet new position

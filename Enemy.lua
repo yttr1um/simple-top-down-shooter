@@ -1,7 +1,3 @@
-_G.love = require "love"
-
-world = love.physics.newWorld(0, 0)
-
 function Enemy() 
 
     local dice = math.random(1,4) 
@@ -22,7 +18,7 @@ function Enemy()
         _y = math.random(0, love.graphics.getHeight())
     end
 
-    enemy =  {
+    return  {
         radius = _radius,
         x = _x,
         y = _y,
@@ -30,9 +26,6 @@ function Enemy()
 
         vx = 0,
         vy = 0,
-
-        body = love.physics.newBody(world, x, y, "dynamic"),
-        shape = love.physics.newCircleShape(_radius),
 
         move = function(self, player_x, player_y)
             if player_x - self.x > 0 then
@@ -57,14 +50,7 @@ function Enemy()
             love.graphics.circle("fill", self.x, self.y, self.radius)
             love.graphics.setColor(1, 1, 1)
         end,
-
     }
-
-    enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
-    enemy.fixture:setUserData(enemy)
-    enemy.body:setFixedRotation(true)
-
-    return enemy
 end
 
 return Enemy
